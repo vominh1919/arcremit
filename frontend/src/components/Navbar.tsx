@@ -5,16 +5,23 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Menu, X, Send, Receipt, History, LayoutDashboard, Home } from 'lucide-react';
+import { Menu, X, Send, Receipt, History, LayoutDashboard, Home, Layers, Calendar, Users, FileText, BarChart3, Gift } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 import { LanguageToggle } from './LanguageToggle';
+import { ThemeToggle } from './ThemeToggle';
 import clsx from 'clsx';
 
 const navItems = [
   { href: '/', label: 'nav.home', icon: Home },
   { href: '/send', label: 'nav.send', icon: Send },
   { href: '/receive', label: 'nav.receive', icon: Receipt },
+  { href: '/batch', label: 'nav.batch', icon: Layers },
+  { href: '/schedule', label: 'nav.schedule', icon: Calendar },
+  { href: '/contacts', label: 'nav.contacts', icon: Users },
+  { href: '/templates', label: 'nav.templates', icon: FileText },
   { href: '/history', label: 'nav.history', icon: History },
+  { href: '/analytics', label: 'nav.analytics', icon: BarChart3 },
+  { href: '/referral', label: 'nav.referral', icon: Gift },
   { href: '/dashboard', label: 'nav.dashboard', icon: LayoutDashboard },
 ];
 
@@ -47,7 +54,7 @@ export function Navbar() {
                   key={item.href}
                   href={item.href}
                   className={clsx(
-                    'relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200',
+                    'relative px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200',
                     isActive
                       ? 'text-white'
                       : 'text-gray-400 hover:text-white hover:bg-white/5'
@@ -60,7 +67,7 @@ export function Navbar() {
                       transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
                     />
                   )}
-                  <span className="relative flex items-center gap-2">
+                  <span className="relative flex items-center gap-1.5">
                     <item.icon className="w-4 h-4" />
                     {t(item.label)}
                   </span>
@@ -71,6 +78,7 @@ export function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
+            <ThemeToggle />
             <LanguageToggle />
             <div className="hidden sm:block">
               <ConnectButton

@@ -1,116 +1,277 @@
 'use client';
 
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
-type Locale = 'en' | 'vi';
-
-interface Translations {
-  [key: string]: { en: string; vi: string };
-}
-
-const translations: Translations = {
-  // Nav
-  'nav.home': { en: 'Home', vi: 'Trang chu' },
-  'nav.send': { en: 'Send', vi: 'Gui tien' },
-  'nav.receive': { en: 'Receive', vi: 'Nhan tien' },
-  'nav.history': { en: 'History', vi: 'Lich su' },
-  'nav.dashboard': { en: 'Dashboard', vi: 'Tong quan' },
-  
-  // Hero
-  'hero.title': { en: 'Send USDC Home in Seconds', vi: 'Gui USDC ve nha trong giay' },
-  'hero.subtitle': { en: 'Cross-border remittance powered by ARC Network. Fast, secure, and nearly free.', vi: 'Chuyen tien quoc te hoat dong boi ARC Network. Nhanh, an toan, va gan nhu mien phi.' },
-  'hero.cta.send': { en: 'Send Money', vi: 'Gui tien' },
-  'hero.cta.receive': { en: 'Receive Money', vi: 'Nhan tien' },
-  
-  // Stats
-  'stats.finality': { en: 'Sub-second finality', vi: 'Xac thuc duoi giay' },
-  'stats.fee': { en: '0.3% fee', vi: 'Phi 0.3%' },
-  'stats.chains': { en: '15+ chains', vi: '15+ mang' },
-  
-  // Send page
-  'send.title': { en: 'Send USDC', vi: 'Gui USDC' },
-  'send.connect': { en: 'Connect Wallet to Send', vi: 'Ket vi de gui tien' },
-  'send.receiver': { en: 'Receiver Address', vi: 'Dia chi nguoi nhan' },
-  'send.amount': { en: 'Amount (USDC)', vi: 'So luong (USDC)' },
-  'send.message': { en: 'Message (optional)', vi: 'Tin nhan (tuy chon)' },
-  'send.fee': { en: 'Fee', vi: 'Phi' },
-  'send.total': { en: 'Total', vi: 'Tong' },
-  'send.button': { en: 'Send Now', vi: 'Gui ngay' },
-  'send.success': { en: 'Remittance Sent!', vi: 'Da gui thanh cong!' },
-  'send.confirm': { en: 'Confirm Send', vi: 'Xac nhan gui' },
-  
-  // Receive page
-  'receive.title': { en: 'Receive USDC', vi: 'Nhan USDC' },
-  'receive.qr': { en: 'Your QR Code', vi: 'Ma QR cua ban' },
-  'receive.pending': { en: 'Pending Remittances', vi: 'Cho nhan' },
-  'receive.claim': { en: 'Claim', vi: 'Nhan' },
-  'receive.claimed': { en: 'Claimed!', vi: 'Da nhan!' },
-  'receive.empty': { en: 'No pending remittances', vi: 'Khong co khoan cho nhan' },
-  
-  // History
-  'history.title': { en: 'Transaction History', vi: 'Lich su giao dich' },
-  'history.all': { en: 'All', vi: 'Tat ca' },
-  'history.sent': { en: 'Sent', vi: 'Da gui' },
-  'history.received': { en: 'Received', vi: 'Da nhan' },
-  'history.pending': { en: 'Pending', vi: 'Dang cho' },
-  'history.date': { en: 'Date', vi: 'Ngay' },
-  'history.direction': { en: 'Direction', vi: 'Huong' },
-  'history.amount': { en: 'Amount', vi: 'So luong' },
-  'history.status': { en: 'Status', vi: 'Trang thai' },
-  'history.message': { en: 'Message', vi: 'Tin nhan' },
-  
-  // Dashboard
-  'dashboard.title': { en: 'Dashboard', vi: 'Tong quan' },
-  'dashboard.totalSent': { en: 'Total Sent', vi: 'Tong da gui' },
-  'dashboard.totalReceived': { en: 'Total Received', vi: 'Tong da nhan' },
-  'dashboard.feeSaved': { en: 'Fee Savings', vi: 'Tiet kiem phi' },
-  'dashboard.active': { en: 'Active Remittances', vi: 'Giao dich dang hoat dong' },
-  'dashboard.activity': { en: 'Monthly Activity', vi: 'Hoat dong hang thang' },
-  
-  // Common
-  'common.connect': { en: 'Connect Wallet', vi: 'Ket vi' },
-  'common.disconnect': { en: 'Disconnect', vi: 'Ngat ket noi' },
-  'common.loading': { en: 'Loading...', vi: 'Dang tai...' },
-  'common.error': { en: 'Error', vi: 'Loi' },
-  'common.success': { en: 'Success', vi: 'Thanh cong' },
-  'common.cancel': { en: 'Cancel', vi: 'Huy' },
-  'common.confirm': { en: 'Confirm', vi: 'Xac nhan' },
-  'common.viewExplorer': { en: 'View on Explorer', vi: 'Xem tren Explorer' },
-  'common.copied': { en: 'Copied!', vi: 'Da sao chep!' },
-  'common.noWallet': { en: 'No wallet connected', vi: 'Chua ket noi vi' },
-};
+type Language = 'en' | 'vi';
 
 interface LanguageContextType {
-  locale: Locale;
-  setLocale: (locale: Locale) => void;
+  language: Language;
+  setLanguage: (lang: Language) => void;
   t: (key: string) => string;
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+const translations: Record<Language, Record<string, string>> = {
+  en: {
+    // Navigation
+    'nav.home': 'Home',
+    'nav.send': 'Send',
+    'nav.receive': 'Receive',
+    'nav.history': 'History',
+    'nav.dashboard': 'Dashboard',
+    'nav.batch': 'Batch',
+    'nav.schedule': 'Schedule',
+    'nav.contacts': 'Contacts',
+    'nav.templates': 'Templates',
+    'nav.analytics': 'Analytics',
+    'nav.referral': 'Referral',
+
+    // Hero
+    'hero.title': 'Send USDC Home in Seconds',
+    'hero.subtitle':
+      'Cross-border remittance powered by ARC Network. Fast, secure, and nearly free.',
+    'hero.cta.send': 'Send Now',
+    'hero.cta.receive': 'Receive Funds',
+
+    // Stats
+    'stats.finality': 'Sub-second Finality',
+    'stats.fee': 'Low Fee',
+    'stats.chains': 'Supported Chains',
+
+    // Send
+    'send.title': 'Send USDC',
+    'send.receiver': 'Receiver Address',
+    'send.amount': 'Amount',
+    'send.message': 'Message',
+    'send.button': 'Send USDC',
+    'send.connect': 'Connect Wallet',
+    'send.success': 'Funds Sent!',
+
+    // Receive
+    'receive.title': 'Receive USDC',
+    'receive.pending': 'Pending Remittances',
+    'receive.empty': 'No pending remittances',
+    'receive.claim': 'Claim',
+
+    // History
+    'history.title': 'Transaction History',
+    'history.empty': 'No transactions yet',
+
+    // Dashboard
+    'dashboard.title': 'Dashboard',
+    'dashboard.totalSent': 'Total Sent',
+    'dashboard.totalReceived': 'Total Received',
+    'dashboard.feeSaved': 'Fee Saved',
+    'dashboard.active': 'Active',
+    'dashboard.activity': 'Monthly Activity',
+    'dashboard.balance': 'Wallet Balance',
+
+    // Batch
+    'batch.title': 'Batch Send',
+    'batch.upload': 'Upload CSV',
+    'batch.addRow': 'Add Row',
+    'batch.preview': 'Preview',
+    'batch.sendAll': 'Send All',
+    'batch.recipients': 'Recipients',
+    'batch.totalAmount': 'Total Amount',
+    'batch.totalFee': 'Total Fee',
+
+    // Schedule
+    'schedule.title': 'Recurring Payments',
+    'schedule.create': 'Create Schedule',
+    'schedule.execute': 'Execute Now',
+    'schedule.cancel': 'Cancel',
+    'schedule.nextPayment': 'Next Payment',
+    'schedule.progress': 'Progress',
+    'schedule.frequency': 'Frequency',
+    'schedule.weekly': 'Weekly',
+    'schedule.monthly': 'Monthly',
+    'schedule.custom': 'Custom',
+
+    // Contacts
+    'contacts.title': 'Contact Book',
+    'contacts.add': 'Add Contact',
+    'contacts.search': 'Search contacts...',
+    'contacts.send': 'Send',
+    'contacts.edit': 'Edit',
+    'contacts.delete': 'Delete',
+    'contacts.nickname': 'Nickname',
+    'contacts.address': 'Wallet Address',
+
+    // Templates
+    'templates.title': 'Remittance Templates',
+    'templates.create': 'New Template',
+    'templates.use': 'Use Template',
+    'templates.delete': 'Delete',
+    'templates.description': 'Description',
+    'templates.receiver': 'Receiver Address',
+    'templates.amount': 'Amount',
+
+    // Analytics
+    'analytics.title': 'Advanced Analytics',
+    'analytics.totalSent': 'Total Sent',
+    'analytics.totalReceived': 'Total Received',
+    'analytics.feeSaved': 'Fee Saved',
+    'analytics.transactions': 'Transactions',
+    'analytics.monthlyBreakdown': 'Monthly Breakdown',
+    'analytics.topRecipients': 'Top Recipients',
+    'analytics.savingsTitle': 'Fee Savings vs Traditional Services',
+    'analytics.referralEarnings': 'Referral Earnings',
+
+    // Referral
+    'referral.title': 'Referral Program',
+    'referral.code': 'Your Referral Code',
+    'referral.link': 'Your Referral Link',
+    'referral.share': 'Share via',
+    'referral.copy': 'Copy Link',
+    'referral.qr': 'Show QR Code',
+    'referral.terms': 'Terms & Conditions',
+    'referral.earnings': 'Earnings',
+    'referral.referrals': 'Referrals',
+    'referral.discount': 'Fee Discount',
+  },
+  vi: {
+    // Navigation
+    'nav.home': 'Trang chu',
+    'nav.send': 'Gui tien',
+    'nav.receive': 'Nhan tien',
+    'nav.history': 'Lich su',
+    'nav.dashboard': 'Tong quan',
+    'nav.batch': 'Gui nhieu',
+    'nav.schedule': 'Dinh ky',
+    'nav.contacts': 'Danh ba',
+    'nav.templates': 'Mau luu',
+    'nav.analytics': 'Thong ke',
+    'nav.referral': 'Gioi thieu',
+
+    // Hero
+    'hero.title': 'Gui USDC Ve Nha Trong Giay Lat',
+    'hero.subtitle':
+      'Chuyen tien quoc te hoat dong boi ARC Network. Nhanh, an toan va gan nhu mien phi.',
+    'hero.cta.send': 'Gui Ngay',
+    'hero.cta.receive': 'Nhan Tien',
+
+    // Stats
+    'stats.finality': 'Xac nhan trong giay',
+    'stats.fee': 'Phi thap',
+    'stats.chains': 'Mang ho tro',
+
+    // Send
+    'send.title': 'Gui USDC',
+    'send.receiver': 'Dia chi nguoi nhan',
+    'send.amount': 'So tien',
+    'send.message': 'Tin nhan',
+    'send.button': 'Gui USDC',
+    'send.connect': 'Ket noi vi',
+    'send.success': 'Da gui thanh cong!',
+
+    // Receive
+    'receive.title': 'Nhan USDC',
+    'receive.pending': 'Cho nhan',
+    'receive.empty': 'Khong co khoan cho nhan',
+    'receive.claim': 'Nhan',
+
+    // History
+    'history.title': 'Lich su giao dich',
+    'history.empty': 'Chua co giao dich',
+
+    // Dashboard
+    'dashboard.title': 'Tong quan',
+    'dashboard.totalSent': 'Tong da gui',
+    'dashboard.totalReceived': 'Tong da nhan',
+    'dashboard.feeSaved': 'Tien phi tiet kiem',
+    'dashboard.active': 'Dang hoat dong',
+    'dashboard.activity': 'Hoat dong hang thang',
+    'dashboard.balance': 'So du vi',
+
+    // Batch
+    'batch.title': 'Gui nhieu nguoi',
+    'batch.upload': 'Tai len CSV',
+    'batch.addRow': 'Them hang',
+    'batch.preview': 'Xem truoc',
+    'batch.sendAll': 'Gui tat ca',
+    'batch.recipients': 'Nguoi nhan',
+    'batch.totalAmount': 'Tong so tien',
+    'batch.totalFee': 'Tong phi',
+
+    // Schedule
+    'schedule.title': 'Thanh toan dinh ky',
+    'schedule.create': 'Tao lich',
+    'schedule.execute': 'Thuc hien ngay',
+    'schedule.cancel': 'Huy',
+    'schedule.nextPayment': 'Thanh toan tiep theo',
+    'schedule.progress': 'Tien do',
+    'schedule.frequency': 'Tan suat',
+    'schedule.weekly': 'Hang tuan',
+    'schedule.monthly': 'Hang thang',
+    'schedule.custom': 'Tuy chinh',
+
+    // Contacts
+    'contacts.title': 'Danh ba',
+    'contacts.add': 'Them lien he',
+    'contacts.search': 'Tim kiem lien he...',
+    'contacts.send': 'Gui',
+    'contacts.edit': 'Sua',
+    'contacts.delete': 'Xoa',
+    'contacts.nickname': 'Ten goi',
+    'contacts.address': 'Dia chi vi',
+
+    // Templates
+    'templates.title': 'Mau chuyen tien',
+    'templates.create': 'Tao mau moi',
+    'templates.use': 'Su dung mau',
+    'templates.delete': 'Xoa',
+    'templates.description': 'Mo ta',
+    'templates.receiver': 'Dia chi nguoi nhan',
+    'templates.amount': 'So tien',
+
+    // Analytics
+    'analytics.title': 'Thong ke nang cao',
+    'analytics.totalSent': 'Tong da gui',
+    'analytics.totalReceived': 'Tong da nhan',
+    'analytics.feeSaved': 'Tien phi tiet kiem',
+    'analytics.transactions': 'Giao dich',
+    'analytics.monthlyBreakdown': 'Phan tich hang thang',
+    'analytics.topRecipients': 'Nguoi nhan hang dau',
+    'analytics.savingsTitle': 'Tiet kiem phi so voi dich vu truyen thong',
+    'analytics.referralEarnings': 'Thu nhap gioi thieu',
+
+    // Referral
+    'referral.title': 'Chuong trinh gioi thieu',
+    'referral.code': 'Ma gioi thieu cua ban',
+    'referral.link': 'Lien ket gioi thieu',
+    'referral.share': 'Chia se qua',
+    'referral.copy': 'Sao chep lien ket',
+    'referral.qr': 'Hien thi ma QR',
+    'referral.terms': 'Dieu khoan va dieu kien',
+    'referral.earnings': 'Thu nhap',
+    'referral.referrals': 'Gioi thieu',
+    'referral.discount': 'Giam phi',
+  },
+};
+
+const LanguageContext = createContext<LanguageContextType>({
+  language: 'en',
+  setLanguage: () => {},
+  t: (key: string) => key,
+});
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocale] = useState<Locale>('en');
+  const [language, setLanguage] = useState<Language>('en');
 
   const t = useCallback(
     (key: string): string => {
-      const entry = translations[key];
-      if (!entry) return key;
-      return entry[locale] || entry.en || key;
+      return translations[language][key] || key;
     },
-    [locale]
+    [language]
   );
 
   return (
-    <LanguageContext.Provider value={{ locale, setLocale, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );
 }
 
 export function useLanguage() {
-  const context = useContext(LanguageContext);
-  if (!context) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
-  }
-  return context;
+  return useContext(LanguageContext);
 }
